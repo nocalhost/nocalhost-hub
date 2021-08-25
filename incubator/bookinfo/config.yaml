@@ -108,7 +108,10 @@ application:
         pods: 
           - "productpage"
       containers:
-        - dev:
+        - name: reviews
+          hub:
+            image: reviews
+          dev:
             gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-reviews.git
             image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/java:latest
             shell: bash
