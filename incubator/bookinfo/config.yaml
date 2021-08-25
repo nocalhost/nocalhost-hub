@@ -115,7 +115,7 @@ application:
             gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-reviews.git
             image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/java:latest
             shell: bash
-            workDir: /home/nocalhost-dev
+            workDir: /home/nocalhost-dev-hub
             command:
               build: [ "./gradlew", "build" ]
               run: [ "./gradlew", "bootRun" ]
