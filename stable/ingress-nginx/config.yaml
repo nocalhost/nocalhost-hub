@@ -22,9 +22,8 @@ application:
               ignoreFilePattern:
                 - "./build"
             command:
-              build: [ "make", "api" ]
-              run: [ "make", "api", "&&", "./build/nocalhost-api", "-c", "/app/config/config.yaml" ]
-              debug: [ "make", "api", "&&", "dlv", "--listen=:2345", "--headless=true", "--api-version=2", "--accept-multiclient", "exec", "./build/nocalhost-api", "--", "-c", "/app/config/config.yaml" ]
+              run: [ "./run.sh" ]
+              debug: [ "./debug.sh" ]
             debug:
               remoteDebugPort: 2345
             env:

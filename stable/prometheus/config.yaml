@@ -1,0 +1,115 @@
+configProperties:
+  version: v2
+
+application:
+  name: prometheus
+  services:
+    - name: prometheus-kube-state-metrics
+      serviceType: deployment
+      containers:
+        - name: kube-state-metrics
+          hub:
+            image: kube-state-metrics
+          dev:
+            gitUrl: https://github.com/kubernetes/kube-state-metrics.git
+            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            workDir: /home/nocalhost-dev-hub
+            shell: "/bin/zsh"
+            sync:
+              type: send
+              filePattern:
+                - .
+              ignoreFilePattern:
+                - "./build"
+            command:
+              run: [ "./run.sh" ]
+              debug: [ "./debug.sh" ]
+            debug:
+              remoteDebugPort: 2345
+            env:
+              - name: NOCALHOST_INJECT_DEV_ENV
+                value: WHATEVER
+            portForward:
+              - 8080:8080
+    - name: prometheus-alertmanager
+      serviceType: deployment
+      containers:
+        - name: prometheus-alertmanager
+          hub:
+            image: alertmanager
+          dev:
+            gitUrl: https://github.com/prometheus/alertmanager.git
+            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            workDir: /home/nocalhost-dev-hub
+            shell: "/bin/zsh"
+            sync:
+              type: send
+              filePattern:
+                - .
+              ignoreFilePattern:
+                - "./build"
+            command:
+              run: [ "./run.sh" ]
+              debug: [ "./debug.sh" ]
+            debug:
+              remoteDebugPort: 2345
+            env:
+              - name: NOCALHOST_INJECT_DEV_ENV
+                value: WHATEVER
+            portForward:
+              - 8080:8080
+    - name: prometheus-pushgateway
+      serviceType: deployment
+      containers:
+        - name: prometheus-pushgateway
+          hub:
+            image: pushgateway
+          dev:
+            gitUrl: https://github.com/prometheus/pushgateway.git
+            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            workDir: /home/nocalhost-dev-hub
+            shell: "/bin/zsh"
+            sync:
+              type: send
+              filePattern:
+                - .
+              ignoreFilePattern:
+                - "./build"
+            command:
+              run: [ "./run.sh" ]
+              debug: [ "./debug.sh" ]
+            debug:
+              remoteDebugPort: 2345
+            env:
+              - name: NOCALHOST_INJECT_DEV_ENV
+                value: WHATEVER
+            portForward:
+              - 8080:8080
+    - name: prometheus-server
+      serviceType: deployment
+      containers:
+        - name: prometheus-server
+          hub:
+            image: prometheus
+          dev:
+            gitUrl: https://github.com/prometheus/prometheus.git
+            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            workDir: /home/nocalhost-dev-hub
+            shell: "/bin/zsh"
+            sync:
+              type: send
+              filePattern:
+                - .
+              ignoreFilePattern:
+                - "./build"
+            command:
+              run: [ "./run.sh" ]
+              debug: [ "./debug.sh" ]
+            debug:
+              remoteDebugPort: 2345
+            env:
+              - name: NOCALHOST_INJECT_DEV_ENV
+                value: WHATEVER
+            portForward:
+              - 8080:8080
+
