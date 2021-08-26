@@ -1,38 +1,20 @@
 configProperties:
   version: v2
-  envFile: env.dev
 
 application:
   name: bookinfo
-  manifestType: rawManifest
-  resourcePath: ["manifest/templates"]
-  ignoredPath: []
-  onPreInstall: 
-    - path: manifest/templates/pre-install/print-num-job-01.yaml
-      weight: "1"
-    - path: manifest/templates/pre-install/print-num-job-02.yaml
-      weight: "-5"
-  env: 
-    - name: DEBUG
-      value: ${DEBUG:-false}
-    - name: DOMAIN
-      value: ${DOMAIN:-coding.net}
   services:
     - name: productpage
       serviceType: deployment
-      dependLabelSelector: 
-        jobs:
-        - "dep-job"
       containers:
         - name: productpage
-          install: 
-            portForward:   
-            - 39080:9080
+          hub:
+            image: productpage
           dev:
             gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-productpage.git
             image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/python:3.7.7-slim-productpage
             shell: bash
-            workDir: /home/nocalhost-dev
+            workDir: /home/nocalhost-dev-hub
             sync: 
               type: send
               filePattern: 
@@ -46,11 +28,14 @@ application:
     - name: details
       serviceType: deployment
       containers:
-        - dev:
+        - name: details
+          hub:
+            image: details
+          dev:
             gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-details.git
             image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/ruby:2.7.1-slim
             shell: bash
-            workDir: /home/nocalhost-dev
+            workDir: /home/nocalhost-dev-hub
             sync: 
               type: send
               filePattern: 
@@ -63,18 +48,15 @@ application:
               value: "true"
     - name: ratings
       serviceType: deployment
-      dependLabelSelector: 
-        pods: 
-          - "productpage"
-          - "app.kubernetes.io/name=productpage"
-        jobs:
-          - "dep-job"
       containers:
-        - dev:
+        - name: ratings
+          hub:
+            image: ratings
+          dev:
             gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-ratings.git
             image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/node:12.18.1-slim
             shell: bash
-            workDir: /home/nocalhost-dev
+            workDir: /home/nocalhost-dev-hub
             command:
               build: []
               run:
@@ -104,9 +86,6 @@ application:
               value: "true"
     - name: reviews
       serviceType: deployment
-      dependLabelSelector: 
-        pods: 
-          - "productpage"
       containers:
         - name: reviews
           hub:
@@ -133,9 +112,6 @@ application:
                 - "build"
     - name: authors
       serviceType: deployment
-      dependLabelSelector:
-        pods:
-          - "authors"
       containers:
         - dev:
             gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-authors.git
