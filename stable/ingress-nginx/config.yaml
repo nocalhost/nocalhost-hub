@@ -3,9 +3,8 @@ configProperties:
 
 application:
   name: ingress-nginx
-
   services:
-    - name: ingress-nginx
+    - name: ingress-ingress-nginx-controller
       serviceType: deployment
       containers:
         - name: controller
