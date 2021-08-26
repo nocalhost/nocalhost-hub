@@ -1,0 +1,35 @@
+configProperties:
+  version: v2
+
+application:
+  name: ingress-nginx
+
+  services:
+    - name: ingress-nginx
+      serviceType: deployment
+      containers:
+        - name: controller
+          hub:
+            image: controller
+          dev:
+            gitUrl: https://github.com/kubernetes/ingress-nginx.git
+            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            workDir: /home/nocalhost-dev-hub
+            shell: "/bin/zsh"
+            sync:
+              type: send
+              filePattern:
+                - .
+              ignoreFilePattern:
+                - "./build"
+            command:
+              build: [ "make", "api" ]
+              run: [ "make", "api", "&&", "./build/nocalhost-api", "-c", "/app/config/config.yaml" ]
+              debug: [ "make", "api", "&&", "dlv", "--listen=:2345", "--headless=true", "--api-version=2", "--accept-multiclient", "exec", "./build/nocalhost-api", "--", "-c", "/app/config/config.yaml" ]
+            debug:
+              remoteDebugPort: 2345
+            env:
+              - name: NOCALHOST_INJECT_DEV_ENV
+                value: WHATEVER
+            portForward:
+              - 8080:8080
