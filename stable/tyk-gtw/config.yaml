@@ -1,0 +1,33 @@
+configProperties:
+  version: v2
+
+application:
+  name: tyk-gtw
+  services:
+    - name: tyk-gtw
+      serviceType: deployment
+      containers:
+        - name: tyk-gtw
+          hub:
+            image: tykio/tyk-gateway:v3.1.0
+          dev:
+            gitUrl: https://github.com/TykTechnologies/tyk.git
+            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            workDir: /home/nocalhost-dev-hub
+            shell: "/bin/zsh"
+            sync:
+              type: send
+              filePattern:
+                - .
+              ignoreFilePattern:
+                - "./build"
+            command:
+              run: [ "./run.sh" ]
+              debug: [ "./debug.sh" ]
+            debug:
+              remoteDebugPort: 2345
+            env:
+              - name: NOCALHOST_INJECT_DEV_ENV
+                value: WHATEVER
+            portForward:
+              - 8089:8089

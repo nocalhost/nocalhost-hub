@@ -1,0 +1,33 @@
+configProperties:
+  version: v2
+
+application:
+  name: metrics-server
+  services:
+    - name: metrics-server
+      serviceType: deployment
+      containers:
+        - name: metrics-server
+          hub:
+            image: k8s.gcr.io/metrics-server/metrics-server:v0.5.0
+          dev:
+            gitUrl: https://github.com/kubernetes-sigs/metrics-server.git
+            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            workDir: /home/nocalhost-dev-hub
+            shell: "/bin/zsh"
+            sync:
+              type: send
+              filePattern:
+                - .
+              ignoreFilePattern:
+                - "./build"
+            command:
+              run: [ "./run.sh" ]
+              debug: [ "./debug.sh" ]
+            debug:
+              remoteDebugPort: 2345
+            env:
+              - name: NOCALHOST_INJECT_DEV_ENV
+                value: WHATEVER
+            portForward:
+              - 443:443
