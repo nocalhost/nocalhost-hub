@@ -1,0 +1,34 @@
+configProperties:
+  version: v2
+
+application:
+  name: dex
+  services:
+    - name: dex
+      serviceType: deployment
+      containers:
+        - name: dex
+          hub:
+            image: dex
+          dev:
+            gitUrl: https://github.com/dexidp/dex.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            workDir: /home/nocalhost-dev-hub
+            shell: "/bin/zsh"
+            sync:
+              type: send
+              filePattern:
+                - .
+              ignoreFilePattern:
+                - "./build"
+                - "./bin"
+            command:
+              run: [ "./run.sh" ]
+              debug: [ "./debug.sh" ]
+            debug:
+              remoteDebugPort: 2345
+            env:
+              - name: NOCALHOST_INJECT_DEV_ENV
+                value: WHATEVER
+            portForward:
+              - 5556:5556
