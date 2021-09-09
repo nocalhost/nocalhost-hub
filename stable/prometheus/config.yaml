@@ -12,7 +12,7 @@ application:
             image: kube-state-metrics
           dev:
             gitUrl: https://github.com/kubernetes/kube-state-metrics.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
             workDir: /home/nocalhost-dev-hub
             shell: "/bin/zsh"
             sync:
@@ -39,7 +39,7 @@ application:
             image: alertmanager
           dev:
             gitUrl: https://github.com/prometheus/alertmanager.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
             workDir: /home/nocalhost-dev-hub
             shell: "/bin/zsh"
             sync:
@@ -66,7 +66,7 @@ application:
             image: pushgateway
           dev:
             gitUrl: https://github.com/prometheus/pushgateway.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
             workDir: /home/nocalhost-dev-hub
             shell: "/bin/zsh"
             sync:
@@ -93,7 +93,7 @@ application:
             image: prometheus
           dev:
             gitUrl: https://github.com/prometheus/prometheus.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
             workDir: /home/nocalhost-dev-hub
             shell: "/bin/zsh"
             sync:

@@ -12,7 +12,7 @@ application:
             image: tykio/tyk-gateway:v3.1.0
           dev:
             gitUrl: https://github.com/TykTechnologies/tyk.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
             workDir: /home/nocalhost-dev-hub
             shell: "/bin/zsh"
             sync:
