@@ -11,8 +11,8 @@ application:
           hub:
             image: productpage
           dev:
-            gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-productpage.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/python:3.7.7-slim-productpage
+            gitUrl: https://e.coding.net/nocalhost/nocalhost/bookinfo-productpage.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/python:3.7.7-slim-productpage
             shell: bash
             workDir: /home/nocalhost-dev-hub
             sync: 
@@ -32,8 +32,8 @@ application:
           hub:
             image: details
           dev:
-            gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-details.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/ruby:2.7.1-slim
+            gitUrl: https://e.coding.net/nocalhost/nocalhost/bookinfo-details.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/ruby:2.7.1-slim
             shell: bash
             workDir: /home/nocalhost-dev-hub
             sync: 
@@ -53,8 +53,8 @@ application:
           hub:
             image: ratings
           dev:
-            gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-ratings.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/node:12.18.1-slim
+            gitUrl: https://e.coding.net/nocalhost/nocalhost/bookinfo-ratings.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/node:12.18.1-slim
             shell: bash
             workDir: /home/nocalhost-dev-hub
             command:
@@ -91,8 +91,8 @@ application:
           hub:
             image: reviews
           dev:
-            gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-reviews.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/java:latest
+            gitUrl: https://e.coding.net/nocalhost/nocalhost/bookinfo-reviews.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/java:latest
             shell: bash
             workDir: /home/nocalhost-dev-hub
             command:
@@ -114,8 +114,8 @@ application:
       serviceType: deployment
       containers:
         - dev:
-            gitUrl: https://e.coding.net/codingcorp/nocalhost/bookinfo-authors.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:latest
+            gitUrl: https://e.coding.net/nocalhost/nocalhost/bookinfo-authors.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:latest
             shell: sh
             workDir: /home/nocalhost-dev
             command:

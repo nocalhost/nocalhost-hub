@@ -12,7 +12,7 @@ application:
             image: controller
           dev:
             gitUrl: https://github.com/kubernetes/ingress-nginx.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
             workDir: /home/nocalhost-dev-hub-01
             shell: "/bin/zsh"
             sync:

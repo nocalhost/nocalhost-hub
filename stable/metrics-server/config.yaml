@@ -12,7 +12,7 @@ application:
             image: k8s.gcr.io/metrics-server/metrics-server:v0.5.0
           dev:
             gitUrl: https://github.com/kubernetes-sigs/metrics-server.git
-            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
             workDir: /home/nocalhost-dev-hub
             shell: "/bin/zsh"
             sync:
