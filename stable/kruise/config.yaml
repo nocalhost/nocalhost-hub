@@ -1,0 +1,44 @@
+application:
+  name: kruise
+  services:
+    - name: kruise-controller-manager
+      serviceType: deployment
+      containers:
+        - name: manager
+          dev:
+            gitUrl: git@github.com:openkruise/kruise.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang
+            shell: zsh
+            workDir: /nocalhost-dev/
+            resources:
+              limits:
+                memory: 4Gi
+                cpu: "2"
+              requests:
+                memory: 2Gi
+                cpu: "0.5"
+            command:
+              build:
+                - CGO_ENABLED=0
+                - GO111MODULE=on
+                - go
+                - build
+                - -mod=vendor
+                - -a
+                - -o
+                - kruise-daemon
+                - ./cmd/daemon/main.go
+              run:
+                - go
+                - run
+                - main.go
+              debug:
+                - dlv
+                - --listen=:2345
+                - --headless=true
+                - --api-version=2
+                - --accept-multiclient
+                - debug
+                - main.go
+            debug:
+              remoteDebugPort: 2345
