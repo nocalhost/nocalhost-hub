@@ -9,26 +9,51 @@ application:
       containers:
         - name: dex
           hub:
-            image: dex
+            image: ghcr.io/dexidp/dex
           dev:
-            gitUrl: https://github.com/dexidp/dex.git
-            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
-            workDir: /home/nocalhost-dev-hub
-            shell: "/bin/zsh"
-            sync:
-              type: send
-              filePattern:
-                - .
-              ignoreFilePattern:
-                - "./build"
-                - "./bin"
-            command:
-              run: [ "./run.sh" ]
-              debug: [ "./debug.sh" ]
-            debug:
-              remoteDebugPort: 2345
-            env:
-              - name: NOCALHOST_INJECT_DEV_ENV
-                value: WHATEVER
-            portForward:
-              - 5556:5556
+              gitUrl: https://github.com/dexidp/dex.git
+              image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+              shell: /bin/zsh
+              workDir: /home/nocalhost-dev
+              storageClass: ""
+              resources: null
+              persistentVolumeDirs: []
+              command:
+                  build:
+                    - GOPROXY="https://goproxy.cn,direct" make
+                    - build
+                  run:
+                    - GOPROXY="https://goproxy.cn,direct" make
+                    - build
+                    - '&&'
+                    - ./bin/dex
+                    - serve
+                    - /etc/dex/cfg/config.yaml
+                  debug:
+                    - GOPROXY="https://goproxy.cn,direct" make
+                    - build
+                    - '&&'
+                    - dlv
+                    - --listen=:2345
+                    - --headless=true
+                    - --api-version=2
+                    - --accept-multiclient
+                    - exec
+                    - ./bin/dex
+                    - --
+                    - serve
+                    - /etc/dex/cfg/config.yaml
+              debug:
+                  remoteDebugPort: 2345
+              hotReload: false
+              sync:
+                  type: send
+                  filePattern:
+                    - .
+                  ignoreFilePattern:
+                    - ./bin
+              env:
+                - name: NOCALHOST_INJECT_DEV_ENV
+                  value: WHATEVER
+              portForward:
+                - 5556:5556
