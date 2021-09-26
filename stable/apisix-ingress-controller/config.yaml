@@ -1,0 +1,50 @@
+configProperties:
+  version: v2
+
+application:
+  name: ingress-nginx
+  services:
+    - name: apisix-ingress-controller
+      serviceType: deployment
+      containers:
+        - name: apisix-ingress-controller
+          hub:
+            image: apache/apisix-ingress-controller
+          dev:
+            gitUrl: https://github.com/apache/apisix-ingress-controller.git
+            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:1.16
+            workDir: /home/nocalhost-dev-hub
+            shell: "/bin/zsh"
+            sync:
+              type: send
+              filePattern:
+                - .
+              ignoreFilePattern:
+                - "./build"
+            command:
+              run: 
+                - go 
+                - run 
+                - main.go 
+                - ingress 
+                - --config-path 
+                - conf/config-default.yaml
+              debug: 
+                - dlv 
+                - --headless 
+                - --log 
+                - --listen
+                - :9009 
+                - --api-version
+                - "2"
+                -  --accept-multiclient 
+                - debug 
+                - main.go 
+                - -- 
+                - ingress 
+                - --config-path 
+                - conf/config-default.yaml
+            debug:
+              remoteDebugPort: 9009
+            portForward:
+              - 8080:8080
