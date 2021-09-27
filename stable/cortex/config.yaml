@@ -1,0 +1,55 @@
+configProperties:
+  version: v2
+
+application:
+  name: cortex
+  serviceType: deployment
+  containers:
+    - name: cortex
+      hub:
+        image: cortexproject/cortex
+      dev:
+        gitUrl: https://github.com/cortexproject/cortex.git
+        image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:latest
+        shell: sh
+        workDir: /home/nocalhost-dev
+        resources:
+            limits:
+                memory: 2Gi
+                cpu: "2"
+            requests:
+                memory: 2Gi
+                cpu: "2"
+        command:
+            run:
+              - go
+              - run
+              - ./cmd/cortex/main.go
+              - -config.file=./docs/configuration/single-process-config-blocks.yaml
+
+            debug:
+              - dlv
+              - --log
+              - --headless
+              - --listen=:12345
+              - --api-version=2
+              - --accept-multiclient
+              - debug
+              - ./cmd/cortex/main.go
+              - --
+              - -config.file=./docs/configuration/single-process-config-blocks.yaml
+        debug:
+            remoteDebugPort: 12345
+        hotReload: true
+        sync:
+            type: send
+            filePattern:
+              - ./
+            ignoreFilePattern:
+              - .git
+              - .idea
+              - .github
+        env: []
+        portForward:
+          - 9009:9009
+          - 9095:9095
