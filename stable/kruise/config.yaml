@@ -1,3 +1,6 @@
+configProperties:
+  version: v2
+
 application:
   name: kruise
   services:
