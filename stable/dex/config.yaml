@@ -9,7 +9,7 @@ application:
       containers:
         - name: dex
           hub:
-            image: ghcr.io/dexidp/dex
+              image: dexidp/dex
           dev:
               gitUrl: https://github.com/dexidp/dex.git
               image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
@@ -20,26 +20,33 @@ application:
               persistentVolumeDirs: []
               command:
                   build:
-                    - GOPROXY="https://goproxy.cn,direct" make
+                    - GOPROXY="https://goproxy.cn,direct"
+                    - make
                     - build
                   run:
-                    - GOPROXY="https://goproxy.cn,direct" make
+                    - GOPROXY="https://goproxy.cn,direct"
+                    - make
                     - build
                     - '&&'
                     - ./bin/dex
                     - serve
                     - /etc/dex/cfg/config.yaml
                   debug:
-                    - GOPROXY="https://goproxy.cn,direct" make
-                    - build
+                    - GOPROXY="https://goproxy.cn,direct"
+                    - go
+                    - mod
+                    - download
+                    - '&&'
+                    - make
+                    - generate
                     - '&&'
                     - dlv
                     - --listen=:2345
                     - --headless=true
                     - --api-version=2
                     - --accept-multiclient
-                    - exec
-                    - ./bin/dex
+                    - debug
+                    - github.com/dexidp/dex/cmd/dex
                     - --
                     - serve
                     - /etc/dex/cfg/config.yaml
