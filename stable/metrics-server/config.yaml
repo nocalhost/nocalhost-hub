@@ -12,22 +12,42 @@ application:
             image: k8s.gcr.io/metrics-server/metrics-server:v0.5.0
           dev:
             gitUrl: https://github.com/kubernetes-sigs/metrics-server.git
-            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            image: codingcorp-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+            shell: /bin/zsh
             workDir: /home/nocalhost-dev-hub
-            shell: "/bin/zsh"
+            command:
+              run:
+                - export GOPROXY=https://goproxy.cn
+                - '&&'
+                - make metrics-server
+                - '&&'
+                - ./metrics-server
+                - --kubelet-insecure-tls
+                - --cert-dir=/tmp
+                - --secure-port=443
+                - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+                - --kubelet-use-node-status-port
+                - --metric-resolution=15s
+              debug:
+                - export GOPROXY=https://goproxy.cn
+                - "&&"
+                - GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-X k8s.io/client-go/pkg/version.gitVersion=metrics-server-helm-chart-3.5.0 -X k8s.io/client-go/pkg/version.gitCommit=0c744555fe9dcdf0c03682f9786c9d676bf7bfdf -X k8s.io/client-go/pkg/version.buildDate=2021-09-26T12:40:08Z" -gcflags "all=-N -l" -o metrics-server sigs.k8s.io/metrics-server/cmd/metrics-server
+                - "&&"
+                - dlv
+                - --headless
+                - --log
+                - --listen :2345
+                - --api-version 2
+                - --accept-multiclient
+                - exec ./metrics-server -- --kubelet-insecure-tls  --cert-dir=/tmp  --secure-port=443 --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname  --kubelet-use-node-status-port --metric-resolution=15s
+            debug:
+              remoteDebugPort: 2345
+            hotReload: false
             sync:
               type: send
               filePattern:
                 - .
               ignoreFilePattern:
-                - "./build"
-            command:
-              run: [ "./run.sh" ]
-              debug: [ "./debug.sh" ]
-            debug:
-              remoteDebugPort: 2345
-            env:
-              - name: NOCALHOST_INJECT_DEV_ENV
-                value: WHATEVER
+                - ./build
             portForward:
               - 443:443
