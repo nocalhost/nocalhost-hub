@@ -8,6 +8,8 @@ application:
       serviceType: deployment
       containers:
         - name: manager
+          hub:
+            image: openkruise/kruise-manager
           dev:
             gitUrl: git@github.com:openkruise/kruise.git
             image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang
