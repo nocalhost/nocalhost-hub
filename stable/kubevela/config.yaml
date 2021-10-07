@@ -2,7 +2,7 @@ configProperties:
   version: v2
 
 application:
-  name: dex
+  name: kubevela-vela-core
   services:
     - name: kubevela-vela-core
       serviceType: deployment
