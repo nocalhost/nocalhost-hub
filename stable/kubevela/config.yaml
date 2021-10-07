@@ -1,0 +1,82 @@
+configProperties:
+  version: v2
+
+application:
+  name: dex
+  services:
+    - name: kubevela-vela-core
+      serviceType: deployment
+      containers:
+        - name: kubevela
+          hub:
+              image: oamdev/vela-core
+          dev:
+              gitUrl: https://github.com/oam-dev/kubevela.git
+              image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+              shell: /bin/zsh
+              workDir: /home/nocalhost-dev
+              resources:
+                limits:
+                  memory: 4Gi
+                  cpu: "4"
+                requests:
+                  memory: 1Gi
+                  cpu: "1"
+              storageClass: ""
+              persistentVolumeDirs: []
+              command:
+                  build:
+                    - make
+                    - build
+                  run:
+                    - go
+                    - run
+                    - ./cmd/core/main.go
+                    - --metrics-addr=:8080
+                    - --enable-leader-election
+                    - --use-webhook=true
+                    - --webhook-port=9443
+                    - --webhook-cert-dir=/etc/k8s-webhook-certs
+                    - --autogen-workload-definition=true
+                    - --health-addr=:9440
+                    - --apply-once-only=off
+                    - --system-definition-namespace=vela-system
+                    - --application-revision-limit=10
+                    - --definition-revision-limit=20
+                    - --oam-spec-ver=v0.3
+                  debug:
+                    - '&&'
+                    - dlv
+                    - --listen=:2345
+                    - --headless=true
+                    - --api-version=2
+                    - --accept-multiclient
+                    - debug
+                    - ./cmd/core/main.go 
+                    - -- 
+                    - --metrics-addr=:8080
+                    - --enable-leader-election
+                    - --use-webhook=true
+                    - --webhook-port=9443
+                    - --webhook-cert-dir=/etc/k8s-webhook-certs
+                    - --autogen-workload-definition=true
+                    - --health-addr=:9440
+                    - --apply-once-only=off
+                    - --system-definition-namespace=vela-system
+                    - --application-revision-limit=10
+                    - --definition-revision-limit=20
+                    - --oam-spec-ver=v0.3
+              debug:
+                  remoteDebugPort: 2345
+              hotReload: false
+              sync:
+                  type: send
+                  filePattern:
+                    - .
+                  ignoreFilePattern:
+                    - ./bin
+              env:
+                - name: NOCALHOST_INJECT_DEV_ENV
+                  value: WHATEVER
+              portForward:
+                - 9443:9443
