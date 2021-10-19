@@ -1,0 +1,67 @@
+configProperties:
+  version: v2
+
+application:
+  name: prometheus-operator
+  services:
+    - name: prometheus-operator
+      serviceType: deployment
+      containers:
+        - name: prometheus-operator
+          hub:
+            image: prometheus-operator
+          dev:
+            gitUrl: https://github.com/prometheus-operator/prometheus-operator.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:latest
+            shell: bash
+            workDir: /home/nocalhost-dev
+            resources:
+              limits:
+                memory: 2Gi
+                cpu: "2"
+              requests:
+                memory: 2Gi
+                cpu: "2"
+            command:
+              build:
+                - go
+                - build
+                - -o
+                - operator
+                - cmd/operator/main.go
+              run:
+                - export
+                - GOPROXY=https://goproxy.cn
+                - '&&'
+                - go
+                - run
+                - cmd/operator/main.go
+                - --kubelet-service=kube-system/kubelet
+                - --prometheus-config-reloader=quay.io/prometheus-operator/prometheus-config-reloader:v0.51.2
+              debug:
+                - export
+                - GOPROXY=https://goproxy.cn
+                - '&&'
+                - dlv
+                - --headless
+                - --log
+                - --listen
+                - :9009
+                - --api-version
+                - "2"
+                - --accept-multiclient
+                - debug
+                - cmd/operator/main.go
+            debug:
+              remoteDebugPort: 9009
+            hotReload: true
+            sync:
+              type: send
+              filePattern:
+                - ./
+              ignoreFilePattern:
+                - .git
+                - .idea
+                - .github
+
+
