@@ -1,0 +1,61 @@
+configProperties:
+  version: v2
+
+application:
+  name: kubevela-vela-core
+  services:
+    - name: kubevela-vela-core
+      serviceType: deployment
+      containers:
+        - name: kubevela
+          hub:
+              image: oamdev/vela-core
+          dev:
+              gitUrl: https://github.com/oam-dev/kubevela.git
+              image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:zsh
+              shell: /bin/zsh
+              workDir: /home/nocalhost-dev
+              resources:
+                limits:
+                  memory: 4Gi
+                  cpu: "4"
+                requests:
+                  memory: 1Gi
+                  cpu: "1"
+              storageClass: ""
+              persistentVolumeDirs: []
+              command:
+                  build:
+                    - make
+                    - build
+                  run:
+                    - go
+                    - run
+                    - ./cmd/core/main.go
+                    - --use-webhook=true
+                    - --webhook-cert-dir=/etc/k8s-webhook-certs
+                  debug:
+                    - dlv
+                    - --listen=:2345
+                    - --headless=true
+                    - --api-version=2
+                    - --accept-multiclient
+                    - debug
+                    - ./cmd/core/main.go 
+                    - -- 
+                    - --use-webhook=true
+                    - --webhook-cert-dir=/etc/k8s-webhook-certs
+              debug:
+                  remoteDebugPort: 2345
+              hotReload: true
+              sync:
+                  type: send
+                  filePattern:
+                    - .
+                  ignoreFilePattern:
+                    - ./bin
+              env:
+                - name: NOCALHOST_INJECT_DEV_ENV
+                  value: WHATEVER
+              portForward:
+                - 9443:9443
