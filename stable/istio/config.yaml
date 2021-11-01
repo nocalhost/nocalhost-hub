@@ -83,8 +83,32 @@ application:
               ignoreFilePattern:
                 - "./build"
             command:
-              run: [ "./run.sh" ]
-              debug: [ "./debug.sh" ]
+              run:
+                - go
+                - env
+                - -w
+                - GOPROXY=https://goproxy.cn,direct
+                - '&&'
+                - go
+                - run
+                - pilot/cmd/pilot-discovery/main.go
+                - discovery
+                - --monitoringAddr=:15014
+                - --log_output_level=default:info
+                - --domain cluster.local
+                - --keepaliveMaxServerConnectionAge 30m
+              debug:
+                - go env -w GOPROXY=https://goproxy.cn,direct
+                - '&&'
+                - GOARCH=amd64 CGO_ENABLED=0 go build -o main -gcflags "all=-N -l" istio.io/istio/pilot/cmd/pilot-discovery
+                - '&&'
+                - dlv
+                - --headless
+                - --log
+                - --listen :2345
+                - --api-version 2
+                - --accept-multiclient
+                - exec ./main discovery -- --monitoringAddr=:15014 --log_output_level=default:info --domain=cluster.local --keepaliveMaxServerConnectionAge=30m
             debug:
               remoteDebugPort: 2345
             env:
