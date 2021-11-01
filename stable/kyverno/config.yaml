@@ -6,6 +6,8 @@ application:
   serviceType: deployment
   containers:
     - name: kyverno
+      hub:
+        image: ghcr.io/kyverno/kyverno:latest
       dev:
         gitUrl: https://github.com/kyverno/kyverno.git
         image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:latest
