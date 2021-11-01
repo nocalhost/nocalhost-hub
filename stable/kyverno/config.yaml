@@ -3,51 +3,53 @@ configProperties:
 
 application:
   name: kyverno
-  serviceType: deployment
-  containers:
+  services:
     - name: kyverno
-      hub:
-        image: ghcr.io/kyverno/kyverno:latest
-      dev:
-        gitUrl: https://github.com/kyverno/kyverno.git
-        image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:latest
-        shell: bash
-        workDir: /home/nocalhost-dev
-        storageClass: ""
-        resources:
-          limits:
-            memory: 2Gi
-            cpu: "1"
-          requests:
-            memory: 2Gi
-            cpu: "1"
-        persistentVolumeDirs: []
-        command:
-          run:
-            - go
-            - run
-            - ./cmd/kyverno/main.go
-          debug:
-            - dlv
-            - --log
-            - --headless
-            - --listen=:9009
-            - --api-version=2
-            - --accept-multiclient
-            - debug
-            - ./cmd/kyverno/main.go
-        debug:
-          remoteDebugPort: 9009
-        hotReload: true
-        sync:
-          type: send
-          filePattern:
-            - ./
-          ignoreFilePattern:
-            - .git
-            - .idea
-            - .github
-        env:
-          - name: GOPROXY
-            value: "https://goproxy.cn"
-        portForward: []
+      serviceType: deployment
+      containers:
+        - name: kyverno
+          hub:
+            image: ghcr.io/kyverno/kyverno
+          dev:
+            gitUrl: https://github.com/kyverno/kyverno.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:latest
+            shell: bash
+            workDir: /home/nocalhost-dev
+            storageClass: ""
+            resources:
+              limits:
+                memory: 2Gi
+                cpu: "1"
+              requests:
+                memory: 2Gi
+                cpu: "1"
+            persistentVolumeDirs: []
+            command:
+              run:
+                - go
+                - run
+                - ./cmd/kyverno/main.go
+              debug:
+                - dlv
+                - --log
+                - --headless
+                - --listen=:9009
+                - --api-version=2
+                - --accept-multiclient
+                - debug
+                - ./cmd/kyverno/main.go
+            debug:
+              remoteDebugPort: 9009
+            hotReload: true
+            sync:
+              type: send
+              filePattern:
+                - ./
+              ignoreFilePattern:
+                - .git
+                - .idea
+                - .github
+            env:
+              - name: GOPROXY
+                value: "https://goproxy.cn"
+            portForward: []
