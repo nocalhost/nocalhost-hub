@@ -17,8 +17,6 @@ application:
               workDir: /home/nocalhost-dev
               command:
                   run:
-                      - env
-                      - GOPROXY=https://goproxy.cn
                       - go
                       - run
                       - cmd/controller/main.go
@@ -26,8 +24,6 @@ application:
                       - --cluster-resource-namespace=$POD_NAMESPACE
                       - --leader-election-namespace=kube-system
                   debug:
-                      - env
-                      - GOPROXY=https://goproxy.cn
                       - dlv
                       - --headless
                       - --log
@@ -44,9 +40,18 @@ application:
                       - --leader-election-namespace=kube-system
               debug:
                   remoteDebugPort: 9009
-              sync: 
-                  mode: "gitIgnore"
-                  type: "send"
+              sync:
+                  type: send
+                  mode: pattern
+                  filePattern:
+                    - .
+                  ignoreFilePattern:
+                    - ".git"
+                    - ".github"
+                    - ".idea"
+              env:
+                - name: GOPROXY
+                  value: "https://goproxy.cn"
 
     - name: cert-manager-webhook
       serviceType: deployment
@@ -61,8 +66,6 @@ application:
             workDir: /home/nocalhost-dev
             command:
               run:
-                - env
-                - GOPROXY=https://goproxy.cn
                 - go
                 - run
                 - cmd/webhook/main.go
@@ -72,8 +75,6 @@ application:
                 - --dynamic-serving-ca-secret-name=cert-manager-webhook-ca
                 - --dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc
               debug:
-                - env
-                - GOPROXY=https://goproxy.cn
                 - dlv
                 - --headless
                 - --log
@@ -87,11 +88,20 @@ application:
                 - --
                 - --v=2
                 - --secure-port=10250
-                - --dynamic-serving-ca-secret-namespace=cert-manager
+                - --dynamic-serving-ca-secret-namespace=$POD_NAMESPACE
                 - --dynamic-serving-ca-secret-name=cert-manager-webhook-ca
                 - --dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc
             debug:
               remoteDebugPort: 9009
-            sync: 
-                mode: "gitIgnore"
-                type: "send"
+            sync:
+              type: send
+              mode: pattern
+              filePattern:
+                - .
+              ignoreFilePattern:
+                - ".git"
+                - ".github"
+                - ".idea"
+            env:
+              - name: GOPROXY
+                value: "https://goproxy.cn"
