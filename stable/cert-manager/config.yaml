@@ -1,0 +1,95 @@
+configProperties:
+  version: v2
+
+application:
+  name: cert-manager
+  services:
+    - name: cert-manager
+      serviceType: deployment
+      containers:
+          - name: cert-manager
+            hub:
+              image: quay.io/jetstack/cert-manager-controller
+            dev:
+              gitUrl: https://github.com/jetstack/cert-manager.git
+              image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:latest
+              shell: bash
+              command:
+                  run:
+                      - env
+                      - GOPROXY=https://goproxy.cn
+                      - go
+                      - run
+                      - cmd/controller/main.go
+                      - --v=2
+                      - --cluster-resource-namespace=$POD_NAMESPACE
+                      - --leader-election-namespace=kube-system
+                  debug:
+                      - env
+                      - GOPROXY=https://goproxy.cn
+                      - dlv
+                      - --headless
+                      - --log
+                      - --listen
+                      - :9009
+                      - --api-version
+                      - "2"
+                      - --accept-multiclient
+                      - debug
+                      - cmd/controller/main.go
+                      - --
+                      - --v=2
+                      - --cluster-resource-namespace=$POD_NAMESPACE
+                      - --leader-election-namespace=kube-system
+              debug:
+                  remoteDebugPort: 9009
+              sync: 
+                  mode: "gitIgnore"
+                  type: "send"
+
+    - name: cert-manager-webhook
+      serviceType: deployment
+      containers:
+        - name: cert-manager
+          hub:
+            image: quay.io/jetstack/cert-manager-webhook
+          dev:
+            gitUrl: https://github.com/jetstack/cert-manager.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:latest
+            shell: bash
+            command:
+              run:
+                - env
+                - GOPROXY=https://goproxy.cn
+                - go
+                - run
+                - cmd/webhook/main.go
+                - --v=2
+                - --secure-port=10250
+                - --dynamic-serving-ca-secret-namespace=$POD_NAMESPACE
+                - --dynamic-serving-ca-secret-name=cert-manager-webhook-ca
+                - --dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc
+              debug:
+                - env
+                - GOPROXY=https://goproxy.cn
+                - dlv
+                - --headless
+                - --log
+                - --listen
+                - :9009
+                - --api-version
+                - "2"
+                - --accept-multiclient
+                - debug
+                - cmd/webhook/main.go
+                - --
+                - --v=2
+                - --secure-port=10250
+                - --dynamic-serving-ca-secret-namespace=cert-manager
+                - --dynamic-serving-ca-secret-name=cert-manager-webhook-ca
+                - --dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc
+            debug:
+              remoteDebugPort: 9009
+            sync: 
+                mode: "gitIgnore"
+                type: "send"
