@@ -1,0 +1,17 @@
+configProperties:
+  version: v2
+
+application:
+  name: apisix-ingress-controller
+  services:
+    - name: apisix-ingress-controller
+      serviceType: deployment
+      containers:
+        - name: apisix-ingress-controller
+          hub:
+            image: apache/apisix-ingress-controller
+          dev:
+            gitUrl: https://github.com/apache/apisix-ingress-controller.git
+            image: nocalhost-docker.pkg.coding.net/nocalhost/dev-images/golang:1.16
+            portForward:
+              - 8080:8080
