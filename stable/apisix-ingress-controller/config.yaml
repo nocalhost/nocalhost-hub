@@ -42,3 +42,5 @@ application:
                 - ingress
                 - --config-path
                 - conf/config-default.yaml
+            debug:
+              remoteDebugPort: 9009
